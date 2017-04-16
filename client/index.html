@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Web API Auth</title>
+    </head>
+    <body>
+      <div class="row">
+        <div class="col s3">
+          <div class="input-field col s12">
+            <input id="emailLogin" type="text" class="validate">
+            <label for="emailLogin">Email</label>
+          </div>
+          <div class="input-field col s12">
+            <input id="passwordLogin" type="password" class="validate">
+            <label for="passwordLogin">Password</label>
+          </div>
+          <p id="status" style="color: red"></p>
+
+          <button class="btn waves-effect waves-light" type="submit" name="action" onclick="login()">Login
+              <i class="material-icons right">send</i>
+          </button><br>
+          <p id="warning" style="color: red"></p>
+
+
+    </div>
+    </div>
+
+    <!-- Modal Trigger -->
+      <p>&nbsp&nbspDon't have account? Please <a href="#modal1">Sign Up</a></p>
+
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal">
+        <div class="modal-content">
+          <h4>Sign Up</h4>
+          Email:<br>
+          <input type="text" id="email"><br><br>
+          Password:<br>
+          <input type="text" id="password">
+
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" onclick="signup()">Signup now</a>
+        </div>
+      </div>
+  </body>
+  <script>
+
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+
+  function signup() {
+    $.ajax({
+      url: 'http://127.0.0.1:3000/api/signup/',
+      type: 'POST',
+      data: {
+        email: $('#email').val(),
+        password: $('#password').val()
+      },
+      success: function(response) {
+        if(response.status == "fail1"){
+          $('#warning').text('Password must be filled')
+        } else if (response.status == "fail2") {
+          $('#warning').text('Password minimum length is 6 character')
+        } else if (response.status == "fail3") {
+          $('#warning').text('Password maximum length is 9 character')
+        } else {
+          window.location.reload()
+        }
+      }
+    })
+  }
+
+  function login() {
+    $.ajax({
+      url: 'http://127.0.0.1:3000/api/login/',
+      type: 'POST',
+
+      data: {
+        email: $('#emailLogin').val(),
+        password: $('#passwordLogin').val()
+      },
+      success: function(response) {
+        if (response.status == 'fail1'){
+          $('#status').text('Username Not Exist')
+        } else if (response.status == 'fail2'){
+          $('#status').text('Invalid Password')
+        } else {
+            localStorage.setItem('token', response)
+            window.location.href = 'http://127.0.0.1:8080/home.html'
+        }
+      }
+    })
+  }
+
+
+  </script>
+</html>

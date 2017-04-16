@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.js"
+    integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+    crossorigin="anonymous"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>HOME</title>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col s3">
+        <h1>WELCOME</h1>
+        <p id="current"></p>
+        <br>
+
+        <p id="data"></p>
+        <br><br>
+        <button class="btn waves-effect waves-light" type="submit" name="action" onclick="logout()">Logout
+            <i class="material-icons right">send</i>
+        </button>
+      </div>
+    </div>
+  </body>
+  <script>
+  $.ajax({
+    url: 'http://127.0.0.1:3000/api/users',
+    type: 'GET',
+    headers: {
+      'token' : localStorage.getItem('token')
+    },
+    success: function(users){
+      for(let i = 0; i < users.length; i++){
+        $('#data').append(`
+          ${users[i].email}<br>
+          `)
+      }
+    }
+  })
+
+  $.ajax({
+    url: 'http://127.0.0.1:3000/api/current',
+    type: 'GET',
+    headers: {
+      'token' : localStorage.getItem('token')
+    },
+    success: function(response){
+    if(response.status != 'fail'){
+      $('#current').append(`You are currently Signing In as: <b>${response}</b>`)
+    }
+    }
+  })
+
+  function logout() {
+    localStorage.clear()
+    window.location.href = 'http://127.0.0.1:8080/index.html'
+  }
+  </script>
+</html>
